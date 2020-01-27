@@ -25,6 +25,12 @@ php_fpm_pm_start_servers: 5
 php_fpm_pm_min_spare_servers: 5
 php_fpm_pm_max_spare_servers: 5
 
+php_fpm_custom_template_enable: false
+php_fpm_custom_template: www-custom.conf.j2
+
+php_fpm_pm_mode: "dynamic"
+php_fpm_request_terminate_timeout: "{{ php_max_execution_time }}s"
+
 # The executable to run when calling PHP from the command line.
 php_executable: "php"
 

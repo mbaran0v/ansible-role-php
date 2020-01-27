@@ -1,0 +1,23 @@
+; dont't edit this file by hand! it's managed by ansible
+
+[www]
+user = {{ php_fpm_pool_user }}
+group = {{ php_fpm_pool_group }}
+
+listen = {{ php_fpm_listen }}
+listen.allowed_clients = {{ php_fpm_listen_allowed_clients }}
+
+pm = {{ php_fpm_pm_mode }}
+pm.max_children = {{ php_fpm_pm_max_children|d(50) }}
+{% if php_fpm_pm_mode == "dynamic" %}
+pm.start_servers = {{ php_fpm_pm_start_servers|d(5) }}
+pm.min_spare_servers = {{ php_fpm_pm_min_spare_servers|d(5) }}
+pm.max_spare_servers = {{ php_fpm_pm_max_spare_servers|d(5) }}
+{% endif %}
+pm.max_requests = {{ php_fpm_pm_max_requests|d(500) }}
+pm.status_path = /status
+
+listen.backlog = -1
+request_terminate_timeout = {{ php_fpm_request_terminate_timeout }}
+rlimit_files = 131072
+rlimit_core = unlimited

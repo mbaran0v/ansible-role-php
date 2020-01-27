@@ -41,7 +41,9 @@
     group: root
     mode: 0644
     force: false
-  when: php_enable_php_fpm
+  when:
+    - php_enable_php_fpm
+    - not php_fpm_custom_template_enable|bool
 
 - name: Configure php-fpm pool (if enabled).
   lineinfile:
@@ -66,7 +68,22 @@
       line: "pm.min_spare_servers = {{ php_fpm_pm_min_spare_servers }}"
     - regexp: '^pm\.max_spare_servers.?=.+$'
       line: "pm.max_spare_servers = {{ php_fpm_pm_max_spare_servers }}"
-  when: php_enable_php_fpm
+  when:
+    - php_enable_php_fpm
+    - not php_fpm_custom_template_enable|bool
+  notify: restart php-fpm
+
+- name: Create the default pool from custom templtae
+  template:
+    src: "{{ php_fpm_custom_template }}"
+    dest: "{{ php_fpm_pool_conf_path }}"
+    owner: root
+    group: root
+    mode: 0644
+    force: true
+  when:
+    - php_enable_php_fpm
+    - php_fpm_custom_template_enable|bool
   notify: restart php-fpm
 
 - name: Ensure php-fpm is started and enabled at boot (if configured).
